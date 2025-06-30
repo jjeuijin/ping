@@ -158,6 +158,11 @@
       })
       .then(data => users = data)
       .catch(err => console.error(err));
+
+     fetch("admins.json")
+      .then(res => res.json())
+      .then(data => admins = data)
+      .catch(err => console.error("admins.json 불러오기 실패", err));
   });
 
   function login(event) {
