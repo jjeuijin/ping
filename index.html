@@ -147,23 +147,23 @@
 </div>
 
 <script>
-  let users = [];
+ let users = [];
+  let admins = [];
 
-  // ✅ 페이지 로드 시 users.json 불러오기
   window.addEventListener("DOMContentLoaded", () => {
-    fetch("user.json")
-      .then(response => {
-        if (!response.ok) throw new Error("유저 데이터를 불러오지 못했습니다.");
-        return response.json();
-      })
+    // 사용자 데이터 로드
+    fetch("users.json")
+      .then(res => res.json())
       .then(data => users = data)
-      .catch(err => console.error(err));
+      .catch(err => console.error("users.json 불러오기 실패", err));
 
-     fetch("admins.json")
+    // 관리자 데이터 로드
+    fetch("admins.json")
       .then(res => res.json())
       .then(data => admins = data)
       .catch(err => console.error("admins.json 불러오기 실패", err));
   });
+
 
   function login(event) {
     event.preventDefault();
@@ -174,12 +174,15 @@
 
     if (matchedUser) {
       alert("로그인 성공!");
-      window.location.href = "main.html"; // 성공 시 이동
+      window.location.href = "index.html"; // 성공 시 이동
     } else {
       alert("아이디 또는 비밀번호가 올바르지 않습니다.");
     }
     return false;
   }
+</script>
+<script>
+  window.location.href = "main.html";
 </script>
 </body>
 </html>
