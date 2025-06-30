@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Login Form</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      overflow: hidden; /* 필요 시 스크롤 방지 */
+    }
+    .container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+    }
+    .container video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      z-index: -1;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+    }
+    .form {
+      position: relative;
+      background: rgba(0,0,0,.7);
+      padding: 60px 10px 20px 10px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+      border-radius: 10px;
+    }
+    .avatar {
+      position: absolute;
+      background: #74b9ff;
+      border-radius: 50%;
+      top:-10%;
+      left: 40%;
+      z-index: 2;
+    }
+    .avatar img {
+      width: 64px;
+      height: 64px;
+    }
+    .form-item {
+      padding: 15px 10px 10px 10px;
+      display: flex;
+      flex-direction: column;
+      letter-spacing: 0.5px;
+    }
+    .form-item label {
+      margin-bottom: 5px;
+      cursor: pointer;
+    }
+    .form-item input {
+      padding: 4px 0;
+      background: transparent;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      border-bottom: 1px solid #fff;
+      outline: none;
+      color: #fff;
+      caret-color: #fff;
+      transition: all 200ms;
+    }
+    .form-item input:focus {
+      border-bottom-color: coral;
+    }
+    ::placeholder {
+      color: #ccc;
+      font-size: 12px;
+    }
+    .form-item button {
+      padding: 10px;
+      font-weight: bold;
+      font-size: 1em;
+      color: #fff;
+      border-radius: 30px;
+      background-color: #ff3838;
+      border: none;
+      outline: none;
+      transition: all 200ms;
+    }
+    .form-item button:hover {
+      cursor: pointer;
+      background: rgba(255, 56, 56, .7);
+    }
+    .is-link {
+      color: #fff;
+      font-size: 14px;
+      text-decoration: none;
+    }
+    .is-link:hover {
+      text-decoration: underline;
+    }
+    .container video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      z-index: -1;
+    }
+
+  </style>
+</head>
+<body>
+<div class="container">
+  <video src="video/login.webm" autoplay muted loop playsinline></video>
+  <form class="form" autocomplete="off" onsubmit="return login(event)">
+    <div class="avatar">
+      <img src="https://res.cloudinary.com/merobusts/image/upload/v1518264117/head-659651_640.png" alt="avatar">
+    </div>
+    <div class="form-item">
+      <label for="email">Email</label>
+      <input type="text" name="email" placeholder="Email" id="email">
+    </div>
+    <div class="form-item">
+      <label for="password">Password</label>
+      <input type="password" name="password" placeholder="Password" id="password">
+    </div>
+    <div class="form-item">
+      <button type="submit">Sign in</button>
+    </div>
+    <div class="form-item">
+      <a href="#" class="is-link">Forgot Password?</a>
+    </div>
+  </form>
+</div>
+
+<script>
+  let users = [];
+
+  // ✅ 페이지 로드 시 users.json 불러오기
+  window.addEventListener("DOMContentLoaded", () => {
+    fetch("user.json")
+      .then(response => {
+        if (!response.ok) throw new Error("유저 데이터를 불러오지 못했습니다.");
+        return response.json();
+      })
+      .then(data => users = data)
+      .catch(err => console.error(err));
+  });
+
+  function login(event) {
+    event.preventDefault();
+    const inputEmail = document.getElementById('email').value.trim();
+    const inputPassword = document.getElementById('password').value.trim();
+
+    const matchedUser = users.find(user => user.email === inputEmail && user.password === inputPassword);
+
+    if (matchedUser) {
+      alert("로그인 성공!");
+      window.location.href = "index.html"; // 성공 시 이동
+    } else {
+      alert("아이디 또는 비밀번호가 올바르지 않습니다.");
+    }
+    return false;
+  }
+</script>
+</body>
+</html>

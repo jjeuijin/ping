@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>날짜 슬라이드</title>
+
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.css" />
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(to right, #000428, #004e92);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .swiper {
+      width: 90%;
+      max-width: 400px;
+      height: 400px;
+    }
+    .calendar-slide {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      height: 100%;
+      background: rgba(255, 255, 255, 0.1);
+      border: 2px solid rgba(255, 255, 255, 0.1);
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+      border-radius: 40px;
+      backdrop-filter: blur(8px);
+    }
+    .month {
+      color: #fff;
+      background: green;
+      width: 100%;
+      font-size: 1.5em;
+      text-align: center;
+      padding: 5px 0;
+    }
+    .day { color: #fff; font-size: 1.2em; margin-top: 10px; }
+    .date { color: #fff; font-size: 4em; margin: 10px 0; }
+    .year { color: #fff; font-size: 1em; }
+  </style>
+</head>
+<body>
+
+<div class="swiper">
+  <div class="swiper-wrapper">
+    <div class="swiper-slide">
+      <div class="calendar-slide"><span class="month">August</span><span class="day">Wed</span><span class="date">16</span><span class="year">2021</span></div>
+    </div>
+    <div class="swiper-slide">
+      <div class="calendar-slide"><span class="month">August</span><span class="day">Thu</span><span class="date">17</span><span class="year">2021</span></div>
+    </div>
+    <div class="swiper-slide">
+      <div class="calendar-slide"><span class="month">August</span><span class="day">Fri</span><span class="date">18</span><span class="year">2021</span></div>
+    </div>
+    <div class="swiper-slide">
+      <div class="calendar-slide"><span class="month">August</span><span class="day">Sat</span><span class="date">19</span><span class="year">2021</span></div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/swiper/swiper-bundle.min.js"></script>
+<script>
+  const swiper = new Swiper('.swiper', {
+    effect: 'coverflow',
+    grabCursor: true,
+    centeredSlides: true,
+    slidesPerView: 3, // 고정: 항상 3개 보이도록
+    loop: true,
+    coverflowEffect: {
+      rotate: 0,
+      stretch: 0,
+      depth: 150,
+      modifier: 2,
+      slideShadows: false,
+    },
+    autoplay: {
+      delay: 2500,
+      disableOnInteraction: false,
+    }
+  });
+</script>
+
+</body>
+</html>

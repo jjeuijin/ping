@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>관리자 알림</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .alert-box {
+      background: white;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+      font-size: 1.5em;
+      text-align: center;
+      display: none; /* 기본은 숨김 */
+    }
+    .alert-box.active {
+      display: block;
+      animation: pop 0.5s;
+    }
+    @keyframes pop {
+      0% { transform: scale(0.8); opacity: 0; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+<body>
+<h2>출근 알림</h2>
+<div id="notification" style="
+    display: none;
+    background: #ff3838;
+    color: #fff;
+    font-weight: bold;
+    padding: 10px;
+    margin: 10px;
+    text-align: center;
+    border-radius: 8px;">
+  새 알림이 도착했습니다!
+</div>
+<div id="log-list"></div>
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAce47UcJTVX9m3wj5VK6hXC2oTb4PoMnw",
+    authDomain: "kumkang-11bf2.firebaseapp.com",
+    databaseURL: "https://kumkang-11bf2-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "kumkang-11bf2",
+    storageBucket: "kumkang-11bf2.appspot.com",
+    messagingSenderId: "836413919607",
+    appId: "1:836413919607:web:8eef9847f61f7f33785172",
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const notificationEl = document.getElementById("notification");
+  const logList = document.getElementById("log-list");
+
+  // 출근 데이터 실시간 감지
+  db.ref("attendance").on("child_added", snapshot => {
+    const data = snapshot.val();
+    console.log("새 출근 데이터:", data);
+    showNotification();
+    appendLog(data);
+  });
+
+  function showNotification() {
+    notificationEl.style.display = "block";
+    setTimeout(() => notificationEl.style.display = "none", 3000);
+  }
+
+  function appendLog(data) {
+    const div = document.createElement("div");
+    div.textContent = `${data.date} ${data.time} - ${data.status}`;
+    logList.prepend(div);
+  }
+</script>
+</body>
+
+
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<script>
+  const firebaseConfig = {
+    apiKey: "AIzaSyAce47UcJTVX9m3wj5VK6hXC2oTb4PoMnw",
+    authDomain: "kumkang-11bf2.firebaseapp.com",
+    databaseURL: "https://kumkang-11bf2-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "kumkang-11bf2",
+    storageBucket: "kumkang-11bf2.appspot.com",
+    messagingSenderId: "836413919607",
+    appId: "1:836413919607:web:8eef9847f61f7f33785172",
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+
+  const alertBox = document.getElementById("alert-box");
+
+  // 관리자: attendance 경로에 새 데이터 생기면 알림 표시
+  db.ref("attendance").on("child_added", snapshot => {
+    const data = snapshot.val();
+    console.log("새 데이터 감지:", data);
+    showAlert();
+  });
+
+  function showAlert() {
+    alertBox.classList.add("active");
+    setTimeout(() => alertBox.classList.remove("active"), 5000); // 5초 후 사라짐
+  }
+</script>
+</body>
+</html>

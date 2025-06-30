@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>모바일 출근 시스템</title>
+
+  <link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.css" rel="stylesheet" />
+
+  <style>
+    body {
+      font-family: 'Poppins', sans-serif;
+      background: #f4f6f9;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .calendar-container,
+    .form-container {
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .calendar-container {
+      padding: 15px;
+    }
+
+    .form-container {
+      background: #ffffff;
+      box-shadow: 0 -3px 15px rgba(0,0,0,0.1);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .form-container h2 {
+      margin-bottom: 15px;
+      font-size: 1.4em;
+    }
+
+    form label {
+      display: block;
+      margin: 8px 0 4px;
+      font-size: 1em;
+    }
+
+    form input[type="date"],
+    form input[type="time"],
+    form input[type="text"],
+    form select {
+      width: 100%;
+      padding: 14px;
+      font-size: 1em;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      margin-bottom: 12px;
+    }
+
+    .radio-group {
+      display: flex;
+      justify-content: space-between;
+      margin: 12px 0;
+      gap: 8px;
+    }
+
+    .radio-group label {
+      flex: 1;
+      text-align: center;
+      background: #f0f0f0;
+      border-radius: 8px;
+      padding: 12px;
+      cursor: pointer;
+    }
+
+    .radio-group input[type="radio"] {
+      display: none;
+    }
+
+    .radio-group input[type="radio"]:checked + label {
+      background: #4e54c8;
+      color: white;
+    }
+
+    button {
+      width: 100%;
+      padding: 16px;
+      font-size: 1.1em;
+      border-radius: 8px;
+      background: #4e54c8;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: background 0.3s;
+    }
+
+    button:hover {
+      background: #8f94fb;
+    }
+
+    .attendance-log {
+      margin-top: 20px;
+      background: rgba(255,255,255,0.8);
+      border-radius: 10px;
+      padding: 15px;
+      max-height: 300px;
+      overflow-y: auto;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .attendance-log h3 {
+      margin-bottom: 10px;
+      font-size: 1.2em;
+    }
+
+    .log-list div {
+      padding: 8px;
+      border-bottom: 1px dashed #ccc;
+    }
+
+    @media(min-width:768px) {
+      body {
+        flex-direction: row;
+      }
+      .calendar-container { width: 65%; }
+      .form-container { width: 35%; box-shadow: -3px 0 15px rgba(0,0,0,0.1); }
+    }
+
+    .chat-toggle-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 64px;
+      height: 64px;
+      background: url('img/msg.png') no-repeat center/cover; /* 수정된 경로 */
+      border-radius: 50%;
+      cursor: pointer;
+      z-index: 1000;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      transition: transform 0.3s;
+    }
+
+    .chat-toggle-btn:hover {
+      transform: scale(1.1);
+    }
+
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0,0,0,0.4);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 999;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .chat-modal {
+      background: white;
+      width: 90%;
+      max-width: 400px;
+      border-radius: 10px;
+      padding: 20px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+    }
+
+    .chat-modal h3 {
+      margin-top: 0;
+      margin-bottom: 10px;
+    }
+
+    .chat-box {
+      border:1px solid #ccc;
+      border-radius:8px;
+      padding:10px;
+      height:180px;
+      overflow-y:auto;
+      margin-bottom:10px;
+      font-size: 0.95em;
+    }
+
+    .chat-input {
+      display:flex;
+    }
+
+    .chat-input input {
+      flex:1;
+      padding:12px;
+      font-size: 1em;
+      border-radius:8px 0 0 8px;
+      border:1px solid #ccc;
+    }
+
+    .chat-input button {
+      border-radius:0 8px 8px 0;
+      font-size: 1em;
+      padding:12px 16px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="calendar-container">
+  <div id="calendar"></div>
+
+  <div class="attendance-log">
+    <h3>이번 달 출근 현황</h3>
+    <div class="log-list" id="log-list"></div>
+  </div>
+</div>
+
+<div class="form-container">
+  <h2>출근 체크</h2>
+  <form id="checkin-form">
+    <label for="selected-date">선택된 날짜</label>
+    <input type="date" id="selected-date" name="selected-date" required readonly />
+
+    <label for="time">시간 선택</label>
+    <input type="time" id="time" required />
+
+    <div class="radio-group">
+      <input type="radio" id="checkin" name="status" value="출근" required />
+      <label for="checkin">출근</label>
+
+      <input type="radio" id="absent" name="status" value="결근" required />
+      <label for="absent">결근</label>
+    </div>
+
+    <div id="absence-reason" style="display:none;">
+      <label for="reason">결근 사유 선택</label>
+      <select id="reason">
+        <option value="">선택하세요</option>
+        <option value="병가">병가</option>
+        <option value="연차">연차</option>
+        <option value="가족행사">가족행사</option>
+        <option value="기타">기타</option>
+      </select>
+      <label for="other-reason">기타 사유</label>
+      <input type="text" id="other-reason" placeholder="기타 사유 입력" />
+    </div>
+
+    <button type="submit">제출</button>
+  </form>
+</div>
+
+<!-- 관리자 채팅 모달 -->
+<div class="modal-overlay" id="chat-modal-overlay">
+  <div class="chat-modal">
+    <h3>관리자 채팅</h3>
+    <div class="chat-box" id="chat-box"></div>
+    <div class="chat-input">
+      <input type="text" id="chat-message" placeholder="메시지를 입력하세요...">
+      <button type="button" onclick="sendMessage()">보내기</button>
+    </div>
+  </div>
+</div>
+
+<!-- 하단 원형 버튼 -->
+<div class="chat-toggle-btn" onclick="toggleChatModal()"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.8/index.global.min.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      locale: 'ko',
+      height: 'auto',
+      selectable: true,
+      dateClick: info => {
+        document.getElementById("selected-date").value = info.dateStr;
+      }
+    });
+    calendar.render();
+
+    const form = document.getElementById("checkin-form");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const date = document.getElementById("selected-date").value;
+      const time = document.getElementById("time").value;
+      const status = document.querySelector("input[name='status']:checked")?.value;
+      const reason = document.getElementById("reason")?.value || "";
+      const otherReason = document.getElementById("other-reason")?.value || "";
+      if (!status) return alert("출근/결근 선택하세요.");
+
+      const data = JSON.parse(localStorage.getItem("checkinData") || "[]");
+      data.push({ date, time, status, reason, otherReason });
+      localStorage.setItem("checkinData", JSON.stringify(data));
+      localStorage.setItem("lastChange", new Date().toISOString());
+
+      calendar.addEvent({
+        title: status === "출근" ? "출근" : `결근${reason ? ` (${reason})` : ""}`,
+        start: date,
+        color: status === "출근" ? "green" : "red",
+        display: "background"
+      });
+
+      form.reset();
+      document.getElementById("absence-reason").style.display = "none";
+      renderAttendanceLog();
+    });
+
+    document.querySelectorAll("input[name='status']").forEach(el => {
+      el.addEventListener("change", () => {
+        document.getElementById("absence-reason").style.display = el.value === "결근" ? "block" : "none";
+      });
+    });
+
+    renderAttendanceLog();
+  });
+
+  function renderAttendanceLog() {
+    const logContainer = document.getElementById("log-list");
+    logContainer.innerHTML = "";
+    const data = JSON.parse(localStorage.getItem("checkinData") || "[]");
+    const month = new Date().getMonth() + 1;
+    data.filter(item => parseInt(item.date.split("-")[1]) === month)
+      .forEach(entry => {
+        const div = document.createElement("div");
+        div.textContent = `${entry.date} ${entry.time} - ${entry.status}`;
+        logContainer.appendChild(div);
+      });
+  }
+
+  function sendMessage() {
+    const box = document.getElementById("chat-box");
+    const msgInput = document.getElementById("chat-message");
+    const message = msgInput.value.trim();
+    if (!message) return;
+    const msgEl = document.createElement("div");
+    msgEl.textContent = "직원: " + message;
+    box.appendChild(msgEl);
+    box.scrollTop = box.scrollHeight;
+    msgInput.value = "";
+    setTimeout(() => {
+      const reply = document.createElement("div");
+      reply.style.textAlign = "right";
+      reply.textContent = "관리자: 확인했습니다.";
+      box.appendChild(reply);
+      box.scrollTop = box.scrollHeight;
+    }, 1000);
+  }
+
+  function toggleChatModal() {
+    document.getElementById("chat-modal-overlay").classList.toggle("active");
+  }
+</script>
+<!-- Firebase SDK 추가 -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+
+<script>
+  // Firebase 초기화
+  const firebaseConfig = {
+    apiKey: "AIzaSyAce47UcJTVX9m3wj5VK6hXC2oTb4PoMnw",
+    authDomain: "kumkang-11bf2.firebaseapp.com",
+    databaseURL: "https://kumkang-11bf2-default-rtdb.asia-southeast1.firebasedatabase.app",
+    projectId: "kumkang-11bf2",
+    storageBucket: "kumkang-11bf2.appspot.com",
+    messagingSenderId: "836413919607",
+    appId: "1:836413919607:web:8eef9847f61f7f33785172",
+  };
+  firebase.initializeApp(firebaseConfig);
+  const db = firebase.database();
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const calendarEl = document.getElementById('calendar');
+    const calendar = new FullCalendar.Calendar(calendarEl, {
+      initialView: 'dayGridMonth',
+      locale: 'ko',
+      height: 'auto',
+      selectable: true,
+      dateClick: info => {
+        document.getElementById("selected-date").value = info.dateStr;
+      }
+    });
+    calendar.render();
+
+    const form = document.getElementById("checkin-form");
+    form.addEventListener("submit", function (e) {
+      e.preventDefault();
+      const date = document.getElementById("selected-date").value;
+      const time = document.getElementById("time").value;
+      const status = document.querySelector("input[name='status']:checked")?.value;
+      const reason = document.getElementById("reason")?.value || "";
+      const otherReason = document.getElementById("other-reason")?.value || "";
+      if (!status) return alert("출근/결근 선택하세요.");
+
+      // Firebase에 데이터 전송
+      const newRef = db.ref("attendance").push();
+      newRef.set({
+        date,
+        time,
+        status,
+        reason,
+        otherReason,
+        timestamp: Date.now(),
+      }, (error) => {
+        if (error) {
+          alert("출근 데이터 전송 실패: " + error);
+        } else {
+          alert("출근 정보가 성공적으로 저장되었습니다!");
+          calendar.addEvent({
+            title: status === "출근" ? "출근" : `결근${reason ? ` (${reason})` : ""}`,
+            start: date,
+            color: status === "출근" ? "green" : "red",
+            display: "background"
+          });
+          form.reset();
+          document.getElementById("absence-reason").style.display = "none";
+          renderAttendanceLog();
+        }
+      });
+    });
+
+    document.querySelectorAll("input[name='status']").forEach(el => {
+      el.addEventListener("change", () => {
+        document.getElementById("absence-reason").style.display = el.value === "결근" ? "block" : "none";
+      });
+    });
+
+    renderAttendanceLog();
+  });
+
+  function renderAttendanceLog() {
+    const logContainer = document.getElementById("log-list");
+    logContainer.innerHTML = "";
+    const month = new Date().getMonth() + 1;
+
+    firebase.database().ref("attendance").orderByChild("date").once("value", snapshot => {
+      snapshot.forEach(childSnapshot => {
+        const data = childSnapshot.val();
+        const itemMonth = parseInt(data.date.split("-")[1]);
+        if (itemMonth === month) {
+          const div = document.createElement("div");
+          div.textContent = `${data.date} ${data.time} - ${data.status}`;
+          logContainer.appendChild(div);
+        }
+      });
+    });
+  }
+</script>
+
+</body>
+</html>
