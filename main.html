@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>PING</title>
+  <link rel="icon" href="img/favicon.ico" />
+  <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
+</head>
+<body>
+<!-- ✅ 최초 로딩 비디오 -->
+<div id="loading-screen">
+  <video id="loading-video" src="video/loading_sp.webm" autoplay muted playsinline></video>
+</div>
+
+<!-- ✅ 메인 앱 UI (기존 구조) -->
+<div id="app" style="display:none;">
+  <header class="app-header">
+    <div class="logo"><img src="img/ping(logo).png" alt="" style="width:130px;"></div>
+    <div class="profile">
+      <img src="img/profile.png" alt="Profile">
+    </div>
+
+  </header>
+
+  <main class="app-body">
+    <!-- ✅ 배너 슬라이드형 배치 + 인디케이터 -->
+    <section class="banner-scroll-container">
+      <div class="banner-scroll" id="banner-scroll">
+        <div class="banner-item">배너1</div>
+        <div class="banner-item">배너2</div>
+        <div class="banner-item">배너3</div>
+        <div class="banner-item">배너4</div>
+        <div class="banner-item">배너5</div>
+      </div>
+      <div class="banner-indicators" id="banner-indicators"></div>
+    </section>
+    <section class="restaurant-list">
+      <div class="search-bar">
+        <span class="search-icon"><i class="fas fa-search"></i></span>
+
+        <input type="text" placeholder="검색" class="search-input">
+      </div>
+      <div class="icon-grid">
+        <div class="icon-card"><img src="img/bio.png" alt="Bio"></div>
+        <div class="icon-card"><img src="img/schedule.png" alt="Schedule"></div>
+        <div class="icon-card"><img src="img/chat.png" alt="Chat"></div>
+        <div class="icon-card"><img src="img/tv.png" alt="tv"></div>
+        <div class="icon-card"><img src="img/bookmark.png" alt="bookmark"></div>
+        <div class="icon-card"><img src="img/money.png" alt="money"></div>
+        <div class="icon-card"><img src="" alt=""></div>
+
+        <div class="icon-card"><img src="img/settings.png" alt="Settings"></div>
+      </div>
+
+    </section>
+    <section class="recommend-list">
+      <h2>추천 메뉴</h2>
+      <div class="recommend-content">
+        <div class="recommend-card">🍕 피자</div>
+        <div class="recommend-card">🍔 버거</div>
+        <div class="recommend-card">🍜 라면</div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="app-footer">
+    <button class="footer-btn">
+      <i class="fas fa-home"></i><span>홈</span>
+    </button>
+    <button class="footer-btn">
+      <i class="fas fa-calendar-alt"></i><span>일정</span>
+    </button>
+    <button class="footer-btn">
+      <i class="fas fa-comments"></i><span>채팅</span>
+    </button>
+    <button class="footer-btn">
+      <i class="fas fa-user"></i><span>내정보</span>
+    </button>
+  </footer>
+
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>

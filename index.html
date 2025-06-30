@@ -1,89 +1,180 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>PING</title>
-  <link rel="icon" href="img/favicon.ico" />
-  <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Login Form</title>
+  <style>
+    html, body {
+      height: 100%;
+      margin: 0;
+    }
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      overflow: hidden; /* 필요 시 스크롤 방지 */
+    }
+    .container {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      z-index: 1;
+    }
+    .container video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      width: auto;
+      height: auto;
+      z-index: -1;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+    }
+    .form {
+      position: relative;
+      background: rgba(0,0,0,.7);
+      padding: 60px 10px 20px 10px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+      border-radius: 10px;
+    }
+    .avatar {
+      position: absolute;
+      background: #74b9ff;
+      border-radius: 50%;
+      top:-10%;
+      left: 40%;
+      z-index: 2;
+    }
+    .avatar img {
+      width: 64px;
+      height: 64px;
+    }
+    .form-item {
+      padding: 15px 10px 10px 10px;
+      display: flex;
+      flex-direction: column;
+      letter-spacing: 0.5px;
+    }
+    .form-item label {
+      margin-bottom: 5px;
+      cursor: pointer;
+    }
+    .form-item input {
+      padding: 4px 0;
+      background: transparent;
+      border-top: none;
+      border-left: none;
+      border-right: none;
+      border-bottom: 1px solid #fff;
+      outline: none;
+      color: #fff;
+      caret-color: #fff;
+      transition: all 200ms;
+    }
+    .form-item input:focus {
+      border-bottom-color: coral;
+    }
+    ::placeholder {
+      color: #ccc;
+      font-size: 12px;
+    }
+    .form-item button {
+      padding: 10px;
+      font-weight: bold;
+      font-size: 1em;
+      color: #fff;
+      border-radius: 30px;
+      background-color: #ff3838;
+      border: none;
+      outline: none;
+      transition: all 200ms;
+    }
+    .form-item button:hover {
+      cursor: pointer;
+      background: rgba(255, 56, 56, .7);
+    }
+    .is-link {
+      color: #fff;
+      font-size: 14px;
+      text-decoration: none;
+    }
+    .is-link:hover {
+      text-decoration: underline;
+    }
+    .container video {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      min-width: 100%;
+      min-height: 100%;
+      transform: translate(-50%, -50%);
+      object-fit: cover;
+      z-index: -1;
+    }
 
+  </style>
 </head>
 <body>
-<!-- ✅ 최초 로딩 비디오 -->
-<div id="loading-screen">
-  <video id="loading-video" src="video/loading_sp.webm" autoplay muted playsinline></video>
-</div>
-
-<!-- ✅ 메인 앱 UI (기존 구조) -->
-<div id="app" style="display:none;">
-  <header class="app-header">
-    <div class="logo"><img src="img/ping(logo).png" alt="" style="width:130px;"></div>
-    <div class="profile">
-      <img src="img/profile.png" alt="Profile">
+<div class="container">
+  <video src="video/login.webm" autoplay muted loop playsinline></video>
+  <form class="form" autocomplete="off" onsubmit="return login(event)">
+    <div class="avatar">
+      <img src="https://res.cloudinary.com/merobusts/image/upload/v1518264117/head-659651_640.png" alt="avatar">
     </div>
-
-  </header>
-
-  <main class="app-body">
-    <!-- ✅ 배너 슬라이드형 배치 + 인디케이터 -->
-    <section class="banner-scroll-container">
-      <div class="banner-scroll" id="banner-scroll">
-        <div class="banner-item">배너1</div>
-        <div class="banner-item">배너2</div>
-        <div class="banner-item">배너3</div>
-        <div class="banner-item">배너4</div>
-        <div class="banner-item">배너5</div>
-      </div>
-      <div class="banner-indicators" id="banner-indicators"></div>
-    </section>
-    <section class="restaurant-list">
-      <div class="search-bar">
-        <span class="search-icon"><i class="fas fa-search"></i></span>
-
-        <input type="text" placeholder="검색" class="search-input">
-      </div>
-      <div class="icon-grid">
-        <div class="icon-card"><img src="img/bio.png" alt="Bio"></div>
-        <div class="icon-card"><img src="img/schedule.png" alt="Schedule"></div>
-        <div class="icon-card"><img src="img/chat.png" alt="Chat"></div>
-        <div class="icon-card"><img src="img/tv.png" alt="tv"></div>
-        <div class="icon-card"><img src="img/bookmark.png" alt="bookmark"></div>
-        <div class="icon-card"><img src="img/money.png" alt="money"></div>
-        <div class="icon-card"><img src="" alt=""></div>
-
-        <div class="icon-card"><img src="img/settings.png" alt="Settings"></div>
-      </div>
-
-    </section>
-    <section class="recommend-list">
-      <h2>추천 메뉴</h2>
-      <div class="recommend-content">
-        <div class="recommend-card">🍕 피자</div>
-        <div class="recommend-card">🍔 버거</div>
-        <div class="recommend-card">🍜 라면</div>
-      </div>
-    </section>
-
-  </main>
-
-  <footer class="app-footer">
-    <button class="footer-btn">
-      <i class="fas fa-home"></i><span>홈</span>
-    </button>
-    <button class="footer-btn">
-      <i class="fas fa-calendar-alt"></i><span>일정</span>
-    </button>
-    <button class="footer-btn">
-      <i class="fas fa-comments"></i><span>채팅</span>
-    </button>
-    <button class="footer-btn">
-      <i class="fas fa-user"></i><span>내정보</span>
-    </button>
-  </footer>
-
+    <div class="form-item">
+      <label for="email">Email</label>
+      <input type="text" name="email" placeholder="Email" id="email">
+    </div>
+    <div class="form-item">
+      <label for="password">Password</label>
+      <input type="password" name="password" placeholder="Password" id="password">
+    </div>
+    <div class="form-item">
+      <button type="submit">Sign in</button>
+    </div>
+    <div class="form-item">
+      <a href="#" class="is-link">Forgot Password?</a>
+    </div>
+  </form>
 </div>
 
-<script src="js/app.js"></script>
+<script>
+  let users = [];
+
+  // ✅ 페이지 로드 시 users.json 불러오기
+  window.addEventListener("DOMContentLoaded", () => {
+    fetch("user.json")
+      .then(response => {
+        if (!response.ok) throw new Error("유저 데이터를 불러오지 못했습니다.");
+        return response.json();
+      })
+      .then(data => users = data)
+      .catch(err => console.error(err));
+  });
+
+  function login(event) {
+    event.preventDefault();
+    const inputEmail = document.getElementById('email').value.trim();
+    const inputPassword = document.getElementById('password').value.trim();
+
+    const matchedUser = users.find(user => user.email === inputEmail && user.password === inputPassword);
+
+    if (matchedUser) {
+      alert("로그인 성공!");
+      window.location.href = "index.html"; // 성공 시 이동
+    } else {
+      alert("아이디 또는 비밀번호가 올바르지 않습니다.");
+    }
+    return false;
+  }
+</script>
 </body>
 </html>
