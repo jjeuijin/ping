@@ -170,14 +170,23 @@
     const inputEmail = document.getElementById('email').value.trim();
     const inputPassword = document.getElementById('password').value.trim();
 
-    const matchedUser = users.find(user => user.email === inputEmail && user.password === inputPassword);
-
-    if (matchedUser) {
-      alert("로그인 성공!");
-      window.location.href = "index.html"; // 성공 시 이동
-    } else {
-      alert("아이디 또는 비밀번호가 올바르지 않습니다.");
+    // 관리자인지 체크
+    const adminMatch = admins.find(admin => admin.email === inputEmail && admin.password === inputPassword);
+    if (adminMatch) {
+      alert("관리자 로그인 성공!");
+      window.location.href = "admin.html";
+      return false;
     }
+
+    // 일반 사용자 체크
+    const userMatch = users.find(user => user.email === inputEmail && user.password === inputPassword);
+    if (userMatch) {
+      alert("로그인 성공!");
+      window.location.href = "main.html";
+      return false;
+    }
+
+    alert("아이디 또는 비밀번호가 올바르지 않습니다.");
     return false;
   }
 </script>
